@@ -1,9 +1,9 @@
 import React from 'react'
 import { Switch, Route, Redirect } from 'react-router-dom'
 
-import Home from '../../routes/Home'
-import Bar from '../../routes/Bar'
-import Foo from '../../routes/Bar/Foo'
+import Home from '../../views/Home'
+import Bar from '../../views/Bar'
+import Foo from '../../views/Bar/Foo'
 
 class ContentMain extends React.Component {
   render() {
@@ -11,7 +11,7 @@ class ContentMain extends React.Component {
       <Switch>
         <Route exact path='/home' component={Home}/>
 
-        <Route exact path='/bar' component={Bar}/>
+        <Route exact path='/bar/index' component={Bar}/>
         <Route exact path='/bar/foo' component={Foo}/>
 
         <Redirect exact from='/' to='/home'/>
