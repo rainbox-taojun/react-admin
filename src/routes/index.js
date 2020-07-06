@@ -33,10 +33,10 @@ const routes = [
     name: 'home',
     component: Home
   },
-
   {
     path: '/bar',
     name: 'bar',
+    redirect: '/bar/index',
     children: [
       {
         path: '/bar/index',

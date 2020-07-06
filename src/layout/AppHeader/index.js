@@ -1,18 +1,61 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 import { Layout, Menu } from 'antd'
+import './index.css'
+import routes from '../../routes/'
+
 const { Header } = Layout
 
-function AppHeader() {
-  return (
-    <Header className="header">
-      <div className="logo" />
-      <Menu theme="dark" mode="horizontal">
-        <Menu.Item key="1">nav 1</Menu.Item>
-        <Menu.Item key="2">nav 2</Menu.Item>
-        <Menu.Item key="3">nav 3</Menu.Item>
-      </Menu>
-    </Header>
-  )
+class AppHeader extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      selectedKeys: []
+    }
+  }
+
+  UNSAFE_componentWillMount() {
+    const path = window.location.pathname
+    const rank = path.split('/')
+    console.log(rank)
+    if (rank.length === 2) {
+      this.setState({
+        selectedKeys: [path]
+      })
+    } else {
+      this.setState({
+        selectedKeys: [`/${rank[1]}`]
+      })
+    }
+  }
+
+  render() {
+    const { selectedKeys } = this.state
+    return (
+      <Header className="header">
+        <div className="logo" />
+        <Menu 
+          theme="dark"
+          mode="horizontal"
+          selectedKeys={selectedKeys}
+          onClick={({key}) => this.setState({selectedKeys: [key]})}
+        >
+          {
+            routes.map(item => {
+              return (
+                <Menu.Item key={item.path}>
+                  <Link to={item.redirect || item.path}>
+                    {item.name}
+                  </Link>
+                </Menu.Item>
+              )
+            })
+          }
+        </Menu>
+      </Header>
+    )
+  }
+  
 }
 
 export default AppHeader
