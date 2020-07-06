@@ -7,15 +7,17 @@ const { SubMenu } = Menu
 const { Sider } = Layout
 
 class Sidebar extends React.Component {
-  state = {
-    openKeys: [],
-    selectedKeys: []
+  constructor(props) {
+    super(props)
+    this.state = {
+      openKeys: [],
+      selectedKeys: []
+    }
   }
 
-  componentDidMount() {
+  UNSAFE_componentWillMount() {
     const path = window.location.pathname
     const rank = path.split('/')
-    console.log(rank)
     if (rank.length === 2) {
       this.setState({
         selectedKeys: [path]

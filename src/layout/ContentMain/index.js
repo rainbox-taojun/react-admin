@@ -1,19 +1,27 @@
 import React from 'react'
 import { Switch, Route, Redirect } from 'react-router-dom'
+import routes from '../../routes/'
 
-import Home from '../../views/Home'
-import Bar from '../../views/Bar'
-import Foo from '../../views/Bar/Foo'
+function getRoute(route) {
+  if (Reflect.has(route, 'children') && route.children.length > 0) {
+    return route.children.map(item => getRoute(item))
+  } else {
+    return (
+      <Route 
+        exact
+        path={route.path}
+        key={route.path}
+        component={route.component}
+      />
+    )
+  }
+}
 
 class ContentMain extends React.Component {
   render() {
     return (
       <Switch>
-        <Route exact path='/home' component={Home}/>
-
-        <Route exact path='/bar/index' component={Bar}/>
-        <Route exact path='/bar/foo' component={Foo}/>
-
+        {routes.map(item => getRoute(item))}
         <Redirect exact from='/' to='/home'/>
       </Switch>
     )
