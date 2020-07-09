@@ -1,31 +1,45 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { Link, withRouter } from 'react-router-dom'
 import { Layout, Menu } from 'antd'
 import routes from '../../routes/'
 
 const { SubMenu } = Menu
 const { Sider } = Layout
 
+@withRouter
 class Sidebar extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
+      sidebarVisible: true,
       openKeys: [],
       selectedKeys: []
     }
   }
 
   UNSAFE_componentWillMount() {
-    const path = window.location.pathname
-    const rank = path.split('/')
+    const pathname = this.props.location.pathname
+    this.setMenuSelect(pathname)
+  }
+
+  UNSAFE_componentWillReceiveProps(nextProps) {
+    //当点击面包屑导航时，侧边栏要同步响应
+    const pathname = nextProps.location.pathname
+    if (this.props.location.pathname !== pathname) {
+      this.setMenuSelect(pathname)
+    }
+  }
+
+  setMenuSelect(pathname) {
+    const rank = pathname.split('/')
     if (rank.length === 2) {
       this.setState({
-        selectedKeys: [path]
+        selectedKeys: [pathname]
       })
     } else {
       this.setState({
-        openKeys: [path.substr(0, path.lastIndexOf('/'))],
-        selectedKeys: [path]
+        openKeys: [pathname.substr(0, pathname.lastIndexOf('/'))],
+        selectedKeys: [pathname]
       })
     }
   }
@@ -56,7 +70,14 @@ class Sidebar extends React.Component {
   }
 
   render() {
-    const { openKeys, selectedKeys } = this.state
+    const pathname = this.props.location.pathname
+    const rank = pathname.split('/')
+    const currentRouter = routes.find(item => item.name === rank[1])
+    console.log(currentRouter)
+    const { openKeys, selectedKeys, sidebarVisible } = this.state
+    if (!(sidebarVisible && Reflect.has(currentRouter, 'children') && currentRouter.children.length > 0)) {
+      return ''
+    }
     return (
       <Sider width={200} className="site-layout-background">
         <Menu
@@ -68,7 +89,7 @@ class Sidebar extends React.Component {
           onClick={({key}) => this.setState({selectedKeys: [key]})}
         >
           {
-            routes.map(item => {
+            currentRouter.children.map(item => {
               return SidebarItem(item)
             })
           }

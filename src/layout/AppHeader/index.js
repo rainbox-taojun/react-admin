@@ -1,11 +1,12 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { Link, withRouter } from 'react-router-dom'
 import { Layout, Menu } from 'antd'
 import './index.css'
 import routes from '../../routes/'
 
 const { Header } = Layout
 
+@withRouter
 class AppHeader extends React.Component {
   constructor(props) {
     super(props)
@@ -15,12 +16,23 @@ class AppHeader extends React.Component {
   }
 
   UNSAFE_componentWillMount() {
-    const path = window.location.pathname
-    const rank = path.split('/')
-    console.log(rank)
+    const pathname = this.props.location.pathname
+    this.setMenuSelect(pathname)
+  }
+
+  componentWillReceiveProps(nextProps) {
+    //当点击面包屑导航时，侧边栏要同步响应
+    const pathname = nextProps.location.pathname
+    if (this.props.location.pathname !== pathname) {
+      this.setMenuSelect(pathname)
+    }
+  }
+
+  setMenuSelect(pathname) {
+    const rank = pathname.split('/')
     if (rank.length === 2) {
       this.setState({
-        selectedKeys: [path]
+        selectedKeys: [pathname]
       })
     } else {
       this.setState({
