@@ -30,6 +30,7 @@ class Sidebar extends React.Component {
     }
   }
 
+  // 设置路由选中状态
   setMenuSelect(pathname) {
     const rank = pathname.split('/')
     if (rank.length === 2) {
@@ -70,12 +71,12 @@ class Sidebar extends React.Component {
   }
 
   render() {
-    const pathname = this.props.location.pathname
-    const rank = pathname.split('/')
-    const currentRouter = routes.find(item => item.name === rank[1])
-    console.log(currentRouter)
+    const pathname = this.props.location.pathname // 当前路由
+    const rank = pathname.split('/') // 切片
+    const currentRouter = routes.find(item => item.name === rank[1]) // 匹配一级路由
     const { openKeys, selectedKeys, sidebarVisible } = this.state
-    if (!(sidebarVisible && Reflect.has(currentRouter, 'children') && currentRouter.children.length > 0)) {
+    if (!currentRouter || !(sidebarVisible && Reflect.has(currentRouter, 'children') && currentRouter.children.length > 0)) {
+      // 当前所在一级路由没有子路由时不渲染
       return ''
     }
     return (
@@ -99,7 +100,7 @@ class Sidebar extends React.Component {
   }
 }
 
-
+// 渲染菜单项
 function SidebarItem(routes) {
   if (Reflect.has(routes, 'children') && routes.children.length > 0) {
     return (
